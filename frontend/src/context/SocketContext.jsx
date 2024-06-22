@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { AuthContext, useAuthContext } from "./AuthContext";
+import { useAuthContext } from "./AuthContext";
 import io from "socket.io-client";
 
 const SocketContext = createContext();
@@ -19,12 +19,27 @@ export const SocketContextProvider = ({ children }) => {
         query: {
           userId: authUser._id,
         },
+        secure: true,
+        transports: ["websocket", "polling"],
       });
-      setSocket(newSocket);
+
+      newSocket.on("connect", () => {
+        console.log("Connected to socket server");
+      });
 
       newSocket.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
       });
+
+      newSocket.on("disconnect", () => {
+        console.log("Disconnected from socket server");
+      });
+
+      newSocket.on("connect_error", (err) => {
+        console.error("Connection error: ", err);
+      });
+
+      setSocket(newSocket);
 
       return () => newSocket.close();
     } else {

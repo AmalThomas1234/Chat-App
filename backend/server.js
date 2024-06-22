@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: "http://localhost:3000", // Specify the frontend origin
+  origin: ["http://localhost:3000", "https://chat-app-ldsh.onrender.com"], // Specify the frontend origin
   credentials: true, // Allow credentials (cookies)
 };
 
