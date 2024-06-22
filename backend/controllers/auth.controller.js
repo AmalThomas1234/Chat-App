@@ -15,13 +15,16 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid username or password" });
     }
 
-    generateTokenAndSetCookie(user._id, res);
+    const token = generateTokenAndSetCookie(user._id, res);
+
+    console.log("TOKEN:", token);
 
     res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       username: user.username,
       profilePic: user.profilePic,
+      token,
     });
   } catch (error) {
     console.log("Error in login controller ", error.message);
@@ -66,7 +69,8 @@ export const signupUser = async (req, res) => {
     });
 
     if (newUser) {
-      generateTokenAndSetCookie(newUser._id, res);
+      const token = generateTokenAndSetCookie(newUser._id, res);
+      console.log("TOKEN:", token);
       await newUser.save();
 
       res.status(201).json({
@@ -74,6 +78,7 @@ export const signupUser = async (req, res) => {
         fullName: newUser.fullName,
         username: newUser.username,
         profilePic: newUser.profilePic,
+        token,
       });
     } else {
       res.status(400).json({ error: "Invalid user details" });
